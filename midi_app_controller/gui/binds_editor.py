@@ -30,6 +30,10 @@ class ButtonBinds(QWidget):
         List of all pairs (button id, SearchableQComboBox used to set action).
     binds_dict : dict[int, ControllerElement]
         Dictionary that allows to get a controller's button by its id.
+    save_and_exit_button : QPushButton
+        Button that saves the binds and closes the widget.
+    exit_button : QPushButton
+        Button that closes the widget without saving.
     """
 
     def __init__(

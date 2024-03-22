@@ -1,11 +1,12 @@
-import pytest
 import os
-import numpy
-from PyQt5.QtTest import QTest
-from qtpy.QtCore import Qt
 from unittest.mock import MagicMock, patch
+
+from qtpy.QtTest import QTest
+from qtpy.QtCore import Qt
 from napari.components import LayerList
 from napari.layers import Image
+import numpy
+import pytest
 
 from midi_app_controller.config import Config
 from midi_app_controller.models.controller import Controller

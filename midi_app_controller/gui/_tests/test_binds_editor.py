@@ -1,8 +1,9 @@
-import pytest
+from typing import List, Tuple
 from unittest.mock import patch
-from qtpy.QtWidgets import QPushButton
+
 from qtpy.QtCore import Qt
 from qtpy.QtTest import QTest
+import pytest
 
 from midi_app_controller.gui.binds_editor import ButtonBinds, KnobBinds, BindsEditor
 from midi_app_controller.models.controller import ControllerElement, Controller
@@ -32,7 +33,7 @@ def controller_sample() -> Controller:
 
 
 @pytest.fixture
-def button_binds_sample() -> list:
+def button_binds_sample() -> List[ButtonBind]:
     return [
         ButtonBind(button_id=1, action_id="play_action"),
         ButtonBind(button_id=2, action_id="stop_action"),
@@ -40,7 +41,7 @@ def button_binds_sample() -> list:
 
 
 @pytest.fixture
-def knob_binds_sample() -> list:
+def knob_binds_sample() -> List[KnobBind]:
     return [
         KnobBind(
             knob_id=3, action_id_increase="volume_up", action_id_decrease="volume_down"
@@ -52,14 +53,14 @@ def knob_binds_sample() -> list:
 
 
 @pytest.fixture
-def mixed_button_binds_sample() -> list:
+def mixed_button_binds_sample() -> List[ButtonBind]:
     return [
         ButtonBind(button_id=1, action_id="play_action"),
     ]
 
 
 @pytest.fixture
-def mixed_knob_binds_sample() -> list:
+def mixed_knob_binds_sample() -> List[KnobBind]:
     return [
         KnobBind(
             knob_id=3, action_id_increase="volume_up", action_id_decrease="volume_down"
@@ -126,7 +127,9 @@ def binds_editor_fixture_basic(qtbot, controller_sample, binds_sample) -> BindsE
 
 
 @pytest.fixture
-def binds_editor_fixture(qtbot, controller_sample, binds_sample) -> tuple:
+def binds_editor_fixture(
+    qtbot, controller_sample, binds_sample
+) -> Tuple[BindsEditor, patch, patch]:
     with patch.object(
         BindsEditor, "_save_and_exit"
     ) as mock_save_and_exit, patch.object(BindsEditor, "_exit") as mock_exit:
@@ -255,10 +258,7 @@ def test_binds_editor_exit(binds_editor_fixture):
 
 def test_binds_editor_save_and_exit_no_mock(binds_editor_fixture_basic):
     widget = binds_editor_fixture_basic
-    all_buttons = widget.findChildren(QPushButton)
-    save_and_exit_button = next(
-        (btn for btn in all_buttons if btn.text() == "Save and exit"), None
-    )
+    save_and_exit_button = widget.save_and_exit_button
     assert save_and_exit_button is not None
 
     QTest.mouseClick(save_and_exit_button, Qt.LeftButton)
@@ -269,8 +269,7 @@ def test_binds_editor_save_and_exit_no_mock(binds_editor_fixture_basic):
 
 def test_binds_editor_exit_no_mock(binds_editor_fixture_basic):
     widget = binds_editor_fixture_basic
-    all_buttons = widget.findChildren(QPushButton)
-    exit_button = next((btn for btn in all_buttons if btn.text() == "Exit"), None)
+    exit_button = widget.exit_button
     assert exit_button is not None
 
     QTest.mouseClick(exit_button, Qt.LeftButton)
