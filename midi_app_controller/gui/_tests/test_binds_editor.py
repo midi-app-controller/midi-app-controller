@@ -83,6 +83,7 @@ def binds_sample(button_binds_sample, knob_binds_sample) -> Binds:
 def button_binds_fixture(qtbot, controller_sample, button_binds_sample) -> ButtonBinds:
     actions = ["play_action", "stop_action"]
     widget = ButtonBinds(controller_sample.buttons, button_binds_sample, actions)
+    widget.show()
     qtbot.addWidget(widget)
     return widget
 
@@ -94,6 +95,7 @@ def button_binds_mixed_fixture(
     actions = ["play_action", "stop_action"]
     widget = ButtonBinds(controller_sample.buttons, mixed_button_binds_sample, actions)
     qtbot.addWidget(widget)
+    widget.show()
     return widget
 
 
@@ -297,3 +299,14 @@ def test_knob_binds_initialization_unbound(qtbot, controller_sample):
     assert len(widget.knob_combos) == 1
     assert widget.knob_combos[0][1].currentText() == ""
     assert widget.knob_combos[0][2].currentText() == ""
+
+
+def test_modify_bind_action(button_binds_fixture, button_binds_sample):
+    b = button_binds_sample
+    new_action = b[1].action_id
+    widget = button_binds_fixture
+
+    widget.button_combos[0][1].setCurrentIndex(2)
+    QTest.qWait(100)
+
+    assert widget.button_combos[0][1].currentText() == new_action
